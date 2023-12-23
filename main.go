@@ -139,9 +139,9 @@ func main() {
 	// https://github.com/bastomiadi/golang-gin-bootstrap
 	r := gin.Default()
 
-	r.StaticFS("/public", http.FS(content))
 	templ := template.Must(template.New("").ParseFS(content, "templates/**/*"))
 	r.SetHTMLTemplate(templ)
+	r.StaticFS("/public", http.FS(content))
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "views/index.html", gin.H{})
@@ -157,7 +157,7 @@ func main() {
 	r.GET("/bundle/:id", func(c *gin.Context) {
 		info, err := getPackageInfo(c.Param("id"))
 		if err != nil {
-			print(err)
+			print(err.Error())
 			c.String(http.StatusInternalServerError, err.Error())
 		} else {
 			c.HTML(http.StatusOK, "views/bundle.html", gin.H{
@@ -169,7 +169,7 @@ func main() {
 	r.GET("/download/:id", func(c *gin.Context) {
 		info, err := getPackageInfo(c.Param("id"))
 		if err != nil {
-			print(err)
+			print(err.Error())
 			c.String(http.StatusInternalServerError, err.Error())
 		} else {
 			c.File(info.cachePath)
