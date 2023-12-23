@@ -157,21 +157,23 @@ func main() {
 	r.GET("/bundle/:id", func(c *gin.Context) {
 		info, err := getPackageInfo(c.Param("id"))
 		if err != nil {
+			print(err)
 			c.String(http.StatusInternalServerError, err.Error())
+		} else {
+			c.HTML(http.StatusOK, "views/bundle.html", gin.H{
+				"id":          c.Param("id"),
+				"packageInfo": info.packageInfo,
+			})
 		}
-
-		c.HTML(http.StatusOK, "views/bundle.html", gin.H{
-			"id":          c.Param("id"),
-			"packageInfo": info.packageInfo,
-		})
 	})
 	r.GET("/download/:id", func(c *gin.Context) {
 		info, err := getPackageInfo(c.Param("id"))
 		if err != nil {
+			print(err)
 			c.String(http.StatusInternalServerError, err.Error())
+		} else {
+			c.File(info.cachePath)
 		}
-
-		c.File(info.cachePath)
 	})
 
 	r.Run()
