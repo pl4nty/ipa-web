@@ -1,0 +1,38 @@
+{{ define "views/bundle.html"}}
+<!--index.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "layouts/header.html" .}}
+
+<h1>{{ .id }}</h1>
+<a class="link-primary" href="/download/{{ .id }}">Download plist</a>
+<!-- {{ range .packageInfo.CFBundleURLTypes }}
+<h2>{{ or .CFBundleURLName .CFBundleTypeRole }}</h1>
+  <ul class="list-group">
+    {{ range .CFBundleURLSchemes }}<li class="list-group-item">{{ . }}</li>{{ end }}
+  </ul>
+{{end}} -->
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Type</th>
+      <th scope="col">Role</th>
+      <th scope="col">Schemes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{ range .packageInfo.CFBundleURLTypes }}
+    <tr>
+      <th scope="row">{{ or .CFBundleURLName .CFBundleTypeRole }}</th>
+      <td>{{ .CFBundleTypeRole }}</td>
+      <td>{{ range .CFBundleURLSchemes }}{{ . }}<br>{{ end }}</td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+
+<!--Embed the footer.html template at this location-->
+{{ template "layouts/footer.html" .}}
+
+{{ end }}
