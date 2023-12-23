@@ -3,7 +3,9 @@ package main
 import (
 	"archive/zip"
 	"bytes"
+	"embed"
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"os"
@@ -128,19 +130,29 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 	return &cachedInfo, err
 }
 
+//go:embed static/* templates/*
+var content embed.FS
+
 func main() {
 	initWithCommand(true, false, "text")
 
 	// https://github.com/bastomiadi/golang-gin-bootstrap
 	r := gin.Default()
 
-	r.Static("/js", "./static/js")
-	r.StaticFile("/favicon.ico", "./static/favicon.ico")
-
-	r.LoadHTMLGlob("templates/**/*")
+	r.StaticFS("/public", http.FS(content))
+	templ := template.Must(template.New("").ParseFS(content, "templates/**/*"))
+	r.SetHTMLTemplate(templ)
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "views/index.html", gin.H{})
+	})
+	r.GET("favicon.ico", func(c *gin.Context) {
+		file, _ := content.ReadFile("static/favicon.ico")
+		c.Data(
+			http.StatusOK,
+			"image/x-icon",
+			file,
+		)
 	})
 	r.GET("/bundle/:id", func(c *gin.Context) {
 		info, err := getPackageInfo(c.Param("id"))
