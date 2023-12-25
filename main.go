@@ -35,7 +35,7 @@ func getAccount() (*appstore.Account, error) {
 	infoResult, err := dependencies.AppStore.AccountInfo()
 	if err != nil {
 		if errors.Is(err, appstore.ErrPasswordTokenExpired) {
-			loginResult, err := dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("USERNAME"), Password: os.Getenv("PASSWORD")})
+			loginResult, err := dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("EMAIL"), Password: os.Getenv("PASSWORD")})
 			if err != nil {
 				return nil, err
 			}
@@ -181,7 +181,7 @@ var content embed.FS
 
 func main() {
 	initWithCommand(true, false, "text")
-	dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("USERNAME"), Password: os.Getenv("PASSWORD")})
+	dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("EMAIL"), Password: os.Getenv("PASSWORD")})
 	searchLimit, err := strconv.ParseInt(os.Getenv("SEARCH_LIMIT"), 10, 64)
 	if err != nil {
 		searchLimit = 15
