@@ -1,18 +1,14 @@
-{{ define "views/index.html"}}
-<!--index.html-->
+{{ define "views/index.html" }}
 
 <!--Embed the header.html template at this location-->
 {{ template "layouts/header.html" .}}
 
 <div class="row m-0 align-items-start">
   <div class="col justify-content-center d-flex">
-    <form class="lg-shadow w-100" style="max-width: 576px" target="_blank">
-      <div class="input-group">
-        <input id="search" type="text" class="form-control" placeholder="App bundle ID"
-          aria-label="Search by app bundle ID">
-        <button class="btn btn-outline-secondary" type="submit"
-          onclick="location.href = `/bundle/${document.querySelector('#search').value}`">Search</button>
-      </div>
+    <form action="/search" class="input-group lg-shadow w-100" style="max-width: 576px">
+      <input id="search" name="q" type="search" class="form-control" placeholder="Search by app name or ID"
+        aria-label="Search by app name or ID">
+      <button class="btn btn-outline-secondary" type="submit">Search</button>
     </form>
   </div>
 </div>

@@ -17,6 +17,8 @@ import (
 	"howett.net/plist"
 )
 
+var SEARCH_LIMIT int64 = 10
+
 type cachedInfo struct {
 	cachePath   string
 	packageInfo packageInfo
@@ -30,25 +32,44 @@ type packageInfo struct {
 	}
 }
 
-func getPackageInfo(bundleID string) (*cachedInfo, error) {
-	infoResult, err := dependencies.AppStore.AccountInfo()
-	acc := infoResult.Account
-
-	if err != nil {
+func getAccount() (*appstore.Account, error) {
+	if infoResult, err := dependencies.AppStore.AccountInfo(); err != nil {
 		if errors.Is(err, appstore.ErrPasswordTokenExpired) {
 			loginResult, err := dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("USERNAME"), Password: os.Getenv("PASSWORD")})
 			if err != nil {
 				return nil, err
 			}
 
-			acc = loginResult.Account
+			return &loginResult.Account, nil
 		} else {
 			return nil, err
 		}
+	} else {
+		return &infoResult.Account, nil
 	}
+}
+
+func searchBundle(query string) (*appstore.SearchOutput, error) {
+	if acc, err := getAccount(); err != nil {
+		return nil, err
+	} else {
+		if output, err := dependencies.AppStore.Search(appstore.SearchInput{
+			Account: *acc,
+			Term:    query,
+			Limit:   SEARCH_LIMIT,
+		}); err != nil {
+			return nil, err
+		} else {
+			return &output, nil
+		}
+	}
+}
+
+func getPackageInfo(bundleID string) (*cachedInfo, error) {
+	acc, err := getAccount()
 
 	// download requires app ID
-	lookupResult, err := dependencies.AppStore.Lookup(appstore.LookupInput{Account: acc, BundleID: bundleID})
+	lookupResult, err := dependencies.AppStore.Lookup(appstore.LookupInput{Account: *acc, BundleID: bundleID})
 	if err != nil {
 		return nil, err
 	}
@@ -86,14 +107,14 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 		return nil, err
 	}
 	tmp.Close()
-	out, err := dependencies.AppStore.Download(appstore.DownloadInput{Account: acc, App: lookupResult.App, OutputPath: tmp.Name()})
+	out, err := dependencies.AppStore.Download(appstore.DownloadInput{Account: *acc, App: lookupResult.App, OutputPath: tmp.Name()})
 	if err != nil {
 		if errors.Is(err, appstore.ErrLicenseRequired) {
-			if (lookupResult.App.Price == 0) {
-				if err := dependencies.AppStore.Purchase(appstore.PurchaseInput{Account: acc, App: lookupResult.App}); err != nil {
+			if lookupResult.App.Price == 0 {
+				if err := dependencies.AppStore.Purchase(appstore.PurchaseInput{Account: *acc, App: lookupResult.App}); err != nil {
 					return nil, err
 				}
-				out, err = dependencies.AppStore.Download(appstore.DownloadInput{Account: acc, App: lookupResult.App, OutputPath: tmp.Name()})
+				out, err = dependencies.AppStore.Download(appstore.DownloadInput{Account: *acc, App: lookupResult.App, OutputPath: tmp.Name()})
 				if err != nil {
 					return nil, err
 				}
@@ -176,6 +197,24 @@ func main() {
 			"image/x-icon",
 			file,
 		)
+	})
+	r.GET("/search", func(c *gin.Context) {
+		query := c.Query("q")
+		if query == "" {
+			c.String(http.StatusBadRequest, "missing search query")
+			return
+		}
+
+		info, err := searchBundle(query)
+		if err != nil {
+			print(err.Error())
+			c.String(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		c.HTML(http.StatusOK, "views/search.html", gin.H{
+			"results": info.Results,
+		})
 	})
 	r.GET("/bundle/:id", func(c *gin.Context) {
 		info, err := getPackageInfo(c.Param("id"))
