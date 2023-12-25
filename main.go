@@ -245,5 +245,12 @@ func main() {
 		}
 	})
 
+	// TODO extract entitlements
+	// binwalk --include xml ./Payload/OneDrive.app/OneDrive --dd "xml:xml" --count 1
+	// csplit ./_OneDrive.extracted/* "/</plist>/"
+	// echo "</plist>" >> xx00
+	// com.apple.developer.associated-domains string[]
+	// rm -r _OneDrive.extracted xx*
+
 	r.Run()
 }
