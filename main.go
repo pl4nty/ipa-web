@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"embed"
+	"errors"
 	"fmt"
 	"html/template"
 	"io"
@@ -37,7 +38,7 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 		return nil, err
 	}
 	acc = infoResult.Account
-
+	
 	// download requires app ID
 	lookupResult, err := dependencies.AppStore.Lookup(appstore.LookupInput{Account: acc, BundleID: bundleID})
 	if err != nil {
@@ -72,7 +73,6 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 		return &cachedInfo, err
 	}
 
-	// hope no-one downloads the same app at the same time
 	tmp, err := os.CreateTemp("", "ipa")
 	if err != nil {
 		return nil, err
@@ -80,7 +80,21 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 	tmp.Close()
 	out, err := dependencies.AppStore.Download(appstore.DownloadInput{Account: acc, App: lookupResult.App, OutputPath: tmp.Name()})
 	if err != nil {
-		return nil, err
+		if errors.Is(err, appstore.ErrLicenseRequired) {
+			if (lookupResult.App.Price == 0) {
+				if err := dependencies.AppStore.Purchase(appstore.PurchaseInput{Account: acc, App: lookupResult.App}); err != nil {
+					return nil, err
+				}
+				out, err = dependencies.AppStore.Download(appstore.DownloadInput{Account: acc, App: lookupResult.App, OutputPath: tmp.Name()})
+				if err != nil {
+					return nil, err
+				}
+			} else {
+				return nil, fmt.Errorf("will not purchase non-free app: %w", err)
+			}
+		} else {
+			return nil, err
+		}
 	}
 
 	// based on readInfoPlist from https://github.com/majd/ipatool/blob/3199afc494d17495f9f05d019ee97d004fca9248/pkg/appstore/appstore_replicate_sinf.go
