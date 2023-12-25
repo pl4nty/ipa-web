@@ -31,14 +31,22 @@ type packageInfo struct {
 }
 
 func getPackageInfo(bundleID string) (*cachedInfo, error) {
-	var acc appstore.Account
-
 	infoResult, err := dependencies.AppStore.AccountInfo()
+	acc := infoResult.Account
+
 	if err != nil {
-		return nil, err
+		if errors.Is(err, appstore.ErrPasswordTokenExpired) {
+			loginResult, err := dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("USERNAME"), Password: os.Getenv("PASSWORD")})
+			if err != nil {
+				return nil, err
+			}
+
+			acc = loginResult.Account
+		} else {
+			return nil, err
+		}
 	}
-	acc = infoResult.Account
-	
+
 	// download requires app ID
 	lookupResult, err := dependencies.AppStore.Lookup(appstore.LookupInput{Account: acc, BundleID: bundleID})
 	if err != nil {
@@ -149,6 +157,7 @@ var content embed.FS
 
 func main() {
 	initWithCommand(true, false, "text")
+	dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("USERNAME"), Password: os.Getenv("PASSWORD")})
 
 	// https://github.com/bastomiadi/golang-gin-bootstrap
 	r := gin.Default()
