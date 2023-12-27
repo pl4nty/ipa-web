@@ -245,12 +245,9 @@ func main() {
 		}
 	})
 
-	// TODO extract entitlements
-	// binwalk --include xml ./Payload/OneDrive.app/OneDrive --dd "xml:xml" --count 1
-	// csplit ./_OneDrive.extracted/* "/</plist>/"
-	// echo "</plist>" >> xx00
-	// com.apple.developer.associated-domains string[]
-	// rm -r _OneDrive.extracted xx*
+	// TODO extract entitlements eg Universal Links
+	// grep --text --null-data --max-count 1 --only-matching "<?xml .*</plist>" ./Payload/OneDrive.app/OneDrive
+	// go regexp module -> plist unmarshal com.apple.developer.associated-domains string[]
 
 	r.Run()
 }
