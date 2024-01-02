@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"bufio"
 	"bytes"
 	"embed"
 	"errors"
@@ -10,6 +11,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -18,18 +20,27 @@ import (
 	"howett.net/plist"
 )
 
+// TODO proper caching?
 type cachedInfo struct {
 	cachePath   string
-	packageInfo packageInfo
+	packageInfo AppleInformation
 }
 
-type packageInfo struct {
+// https://developer.apple.com/documentation/bundleresources/AppleEntitlements
+type AppleEntitlements struct {
+	AssociatedDomains []string `plist:"com.apple.developer.associated-domains"`
+}
+
+// https://developer.apple.com/documentation/bundleresources/information_property_list
+type AppleInformation struct {
 	CFBundleURLTypes []struct {
 		CFBundleURLName    string   `plist:"CFBundleURLName,omitempty"`
 		CFBundleTypeRole   string   `plist:"CFBundleTypeRole,omitempty"`
 		CFBundleURLSchemes []string `plist:"CFBundleURLSchemes,omitempty"`
 	}
 }
+
+// TODO https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
 
 func getAccount() (*appstore.Account, error) {
 	infoResult, err := dependencies.AppStore.AccountInfo()
@@ -88,7 +99,7 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 			return nil, err
 		}
 
-		var info packageInfo
+		var info AppleInformation
 		_, err = plist.Unmarshal(data.Bytes(), &info)
 		if err != nil {
 			return nil, err
@@ -126,13 +137,18 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 		}
 	}
 
-	// based on readInfoPlist from https://github.com/majd/ipatool/blob/3199afc494d17495f9f05d019ee97d004fca9248/pkg/appstore/appstore_replicate_sinf.go
+	var info AppleInformation
+	var entitlements AppleEntitlements
+
+	// regexp doesn't support backreferences
+	// https://stackoverflow.com/q/23968992
+	mainBinary := regexp.MustCompile(`^Payload/(.+)\.app/([^/]+)$`)
+
+	// based on readInfoPlist from https://github.com/majd/ipatool/blob/v2.1.3/pkg/appstore/appstore_replicate_sinf.go
 	zipReader, err := zip.OpenReader(out.DestinationPath)
 	if err != nil {
 		return nil, err
 	}
-
-	var info packageInfo
 	for _, file := range zipReader.File {
 		if strings.Contains(file.Name, ".app/Info.plist") {
 			src, err := file.Open()
@@ -160,8 +176,53 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 			if err != nil {
 				return nil, err
 			}
+		}
 
-			break
+		// Package/MyApp.app/MyApp is the main binary, containing the entitlements plist
+		matches := mainBinary.FindStringSubmatch(file.Name)
+		if len(matches) == 3 && matches[1] == matches[2] {
+			src, err := file.Open()
+			if err != nil {
+				return nil, err
+			}
+
+			// carve first newline-delimited plist
+			// could be faster by reading only __LINKEDIT section at end of binary
+			// backwards read is too complex due to decompression
+			scanner := bufio.NewReader(src)
+
+			// would be nicer to use a WriteSeeker with plist.NewDecoder()
+			// but stdlib doesn't have an in-memory one
+			lines := []byte{}
+			for {
+				line, err := scanner.ReadSlice('\n')
+				if err != nil {
+					// use Reader to ignore full buffer, unlike Scanner
+					// buffer is much larger than plist line length, longest I've seen is 100 chars
+					if err != bufio.ErrBufferFull {
+						return nil, err
+					}
+				}
+
+				if len(lines) == 0 {
+					if bytes.HasPrefix(line, []byte("<plist")) {
+						lines = append(lines, []byte("<plist version=\"1.0\">")...)
+					}
+				} else {
+					if bytes.HasPrefix(line, []byte("</plist>")) {
+						lines = append(lines, []byte("</plist>")...)
+						break
+					}
+					lines = append(lines, line...)
+				}
+			}
+
+			print(string(lines))
+
+			_, err = plist.Unmarshal(lines, &entitlements)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
@@ -244,10 +305,6 @@ func main() {
 			c.File(info.cachePath)
 		}
 	})
-
-	// TODO extract entitlements eg Universal Links
-	// grep --text --null-data --max-count 1 --only-matching "<?xml .*</plist>" ./Payload/OneDrive.app/OneDrive
-	// go regexp module -> plist unmarshal com.apple.developer.associated-domains string[]
 
 	r.Run()
 }
