@@ -14,7 +14,9 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/avast/retry-go/v4"
 	"github.com/gin-gonic/gin"
 	"github.com/majd/ipatool/v2/pkg/appstore"
 	"howett.net/plist"
@@ -42,45 +44,32 @@ type AppleInformation struct {
 
 // TODO https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
 
-func getAccount() (*appstore.Account, error) {
-	infoResult, err := dependencies.AppStore.AccountInfo()
-	if err != nil {
-		if errors.Is(err, appstore.ErrPasswordTokenExpired) {
-			loginResult, err := dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("EMAIL"), Password: os.Getenv("PASSWORD")})
-			if err != nil {
-				return nil, err
-			}
-			return &loginResult.Account, nil
-		}
-		return nil, err
-	}
-	return &infoResult.Account, nil
-}
-
 func searchBundle(query string, limit int64) (*appstore.SearchOutput, error) {
-	acc, err := getAccount()
+	accountInfo, err := dependencies.AppStore.AccountInfo()
 	if err != nil {
 		return nil, err
 	}
+
 	output, err := dependencies.AppStore.Search(appstore.SearchInput{
-		Account: *acc,
+		Account: accountInfo.Account,
 		Term:    query,
 		Limit:   limit,
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	return &output, nil
 }
 
 func getPackageInfo(bundleID string) (*cachedInfo, error) {
-	acc, err := getAccount()
+	accountInfo, err := dependencies.AppStore.AccountInfo()
 	if err != nil {
 		return nil, err
 	}
 
 	// download requires app ID
-	lookupResult, err := dependencies.AppStore.Lookup(appstore.LookupInput{Account: *acc, BundleID: bundleID})
+	lookupResult, err := dependencies.AppStore.Lookup(appstore.LookupInput{Account: accountInfo.Account, BundleID: bundleID})
 	if err != nil {
 		return nil, err
 	}
@@ -118,23 +107,20 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 	}
 	tmp.Close()
 
-	out, err := dependencies.AppStore.Download(appstore.DownloadInput{Account: *acc, App: lookupResult.App, OutputPath: tmp.Name()})
-	if err != nil {
+	out, err := retry.DoWithData(func() (appstore.DownloadOutput, error) {
+		return dependencies.AppStore.Download(appstore.DownloadInput{Account: accountInfo.Account, App: lookupResult.App, OutputPath: tmp.Name()})
+	}, append(retryOptions, retry.RetryIf(func(err error) bool {
 		if errors.Is(err, appstore.ErrLicenseRequired) {
-			if lookupResult.App.Price == 0 {
-				if err := dependencies.AppStore.Purchase(appstore.PurchaseInput{Account: *acc, App: lookupResult.App}); err != nil {
-					return nil, err
-				}
-				out, err = dependencies.AppStore.Download(appstore.DownloadInput{Account: *acc, App: lookupResult.App, OutputPath: tmp.Name()})
-				if err != nil {
-					return nil, err
-				}
-			} else {
-				return nil, fmt.Errorf("will not purchase non-free app: %w", err)
+			err := dependencies.AppStore.Purchase(appstore.PurchaseInput{Account: accountInfo.Account, App: lookupResult.App})
+			if err == nil {
+				return true
 			}
-		} else {
-			return nil, err
 		}
+
+		return false
+	}))...)
+	if err != nil {
+		return nil, err
 	}
 
 	var info AppleInformation
@@ -217,8 +203,6 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 				}
 			}
 
-			print(string(lines))
-
 			_, err = plist.Unmarshal(lines, &entitlements)
 			if err != nil {
 				return nil, err
@@ -237,20 +221,41 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 	return &cachedInfo, nil
 }
 
+func login() error {
+	_, err := dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("EMAIL"), Password: os.Getenv("PASSWORD")})
+	return err
+}
+
+var retryOptions = []retry.Option{
+	retry.LastErrorOnly(true),
+	retry.DelayType(retry.FixedDelay),
+	retry.Delay(time.Millisecond),
+	retry.Attempts(2),
+	retry.RetryIf(func(err error) bool {
+		if errors.Is(err, appstore.ErrPasswordTokenExpired) {
+			err := login()
+			if err == nil {
+				return true
+			}
+			print(err.Error())
+		}
+
+		return false
+	}),
+}
+
 //go:embed static/* templates/*
 var content embed.FS
 
 func main() {
 	initWithCommand(true, false, "text")
-	dependencies.AppStore.Login(appstore.LoginInput{Email: os.Getenv("EMAIL"), Password: os.Getenv("PASSWORD")})
+	login()
 	searchLimit, err := strconv.ParseInt(os.Getenv("SEARCH_LIMIT"), 10, 64)
 	if err != nil {
 		searchLimit = 15
 	}
 
-	// https://github.com/bastomiadi/golang-gin-bootstrap
 	r := gin.Default()
-
 	templ := template.Must(template.New("").ParseFS(content, "templates/**/*"))
 	r.SetHTMLTemplate(templ)
 	r.StaticFS("/public", http.FS(content))
@@ -258,14 +263,22 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "views/index.html", gin.H{})
 	})
+
 	r.GET("favicon.ico", func(c *gin.Context) {
-		file, _ := content.ReadFile("static/favicon.ico")
+		file, err := content.ReadFile("static/favicon.ico")
+		if err != nil {
+			print(err.Error())
+			c.String(http.StatusInternalServerError, err.Error())
+			return
+		}
+
 		c.Data(
 			http.StatusOK,
 			"image/x-icon",
 			file,
 		)
 	})
+
 	r.GET("/search", func(c *gin.Context) {
 		query := c.Query("q")
 		if query == "" {
@@ -273,37 +286,44 @@ func main() {
 			return
 		}
 
-		info, err := searchBundle(query, searchLimit)
+		data, err := retry.DoWithData(func() (*appstore.SearchOutput, error) {
+			return searchBundle(query, searchLimit)
+		}, retryOptions...)
 		if err != nil {
-			print(err.Error())
 			c.String(http.StatusInternalServerError, err.Error())
 			return
 		}
 
 		c.HTML(http.StatusOK, "views/search.html", gin.H{
-			"results": info.Results,
+			"Results": data.Results,
 		})
 	})
+
 	r.GET("/bundle/:id", func(c *gin.Context) {
-		info, err := getPackageInfo(c.Param("id"))
+		data, err := retry.DoWithData(func() (*cachedInfo, error) {
+			return getPackageInfo(c.Param("id"))
+		}, retryOptions...)
 		if err != nil {
-			print(err.Error())
 			c.String(http.StatusInternalServerError, err.Error())
-		} else {
-			c.HTML(http.StatusOK, "views/bundle.html", gin.H{
-				"id":          c.Param("id"),
-				"packageInfo": info.packageInfo,
-			})
+			return
 		}
+
+		c.HTML(http.StatusOK, "views/bundle.html", gin.H{
+			"Id":          c.Param("id"),
+			"PackageInfo": data.packageInfo,
+		})
 	})
+
 	r.GET("/download/:id", func(c *gin.Context) {
-		info, err := getPackageInfo(c.Param("id"))
+		data, err := retry.DoWithData(func() (*cachedInfo, error) {
+			return getPackageInfo(c.Param("id"))
+		}, retryOptions...)
 		if err != nil {
-			print(err.Error())
 			c.String(http.StatusInternalServerError, err.Error())
-		} else {
-			c.File(info.cachePath)
+			return
 		}
+
+		c.File(data.cachePath)
 	})
 
 	r.Run()

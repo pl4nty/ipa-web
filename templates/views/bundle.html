@@ -3,8 +3,8 @@
 <!--Embed the header.html template at this location-->
 {{ template "layouts/header.html" .}}
 
-<h1>{{ .id }}</h1>
-<a class="link-primary" href="/download/{{ .id }}">Download plist</a>
+<h1>{{ .Id }}</h1>
+<a class="link-primary" href="/download/{{ .Id }}">Download plist</a>
 
 <table class="table">
   <thead>
@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody>
-    {{ range .packageInfo.CFBundleURLTypes }}
+    {{ range .PackageInfo.CFBundleURLTypes }}
     <tr>
       <th scope="row">{{ or .CFBundleURLName .CFBundleTypeRole }}</th>
       <td>{{ .CFBundleTypeRole }}</td>
