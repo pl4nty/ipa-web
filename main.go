@@ -28,7 +28,7 @@ type cachedInfo struct {
 	packageInfo AppleInformation
 }
 
-// https://developer.apple.com/documentation/bundleresources/AppleEntitlements
+// https://developer.apple.com/documentation/bundleresources/entitlements
 type AppleEntitlements struct {
 	AssociatedDomains []string `plist:"com.apple.developer.associated-domains"`
 }
@@ -314,6 +314,7 @@ func main() {
 		})
 	})
 
+	// TODO download Info.plist or Entitlements.plist
 	r.GET("/download/:id", func(c *gin.Context) {
 		data, err := retry.DoWithData(func() (*cachedInfo, error) {
 			return getPackageInfo(c.Param("id"))
