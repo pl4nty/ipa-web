@@ -107,18 +107,14 @@ func getPackageInfo(bundleID string) (*cachedInfo, error) {
 	}
 	tmp.Close()
 
-	out, err := retry.DoWithData(func() (appstore.DownloadOutput, error) {
-		return dependencies.AppStore.Download(appstore.DownloadInput{Account: accountInfo.Account, App: lookupResult.App, OutputPath: tmp.Name()})
-	}, append(retryOptions, retry.RetryIf(func(err error) bool {
-		if errors.Is(err, appstore.ErrLicenseRequired) {
-			err := dependencies.AppStore.Purchase(appstore.PurchaseInput{Account: accountInfo.Account, App: lookupResult.App})
-			if err == nil {
-				return true
-			}
-		}
-
-		return false
-	}))...)
+	out, err := dependencies.AppStore.Download(appstore.DownloadInput{Account: accountInfo.Account, App: lookupResult.App, OutputPath: tmp.Name()})
+	if errors.Is(err, appstore.ErrLicenseRequired) {
+		err = dependencies.AppStore.Purchase(appstore.PurchaseInput{Account: accountInfo.Account, App: lookupResult.App})
+	}
+	if err != nil {
+		return nil, err
+	}
+	out, err = dependencies.AppStore.Download(appstore.DownloadInput{Account: accountInfo.Account, App: lookupResult.App, OutputPath: tmp.Name()})
 	if err != nil {
 		return nil, err
 	}
