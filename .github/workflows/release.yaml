@@ -41,6 +41,17 @@ jobs:
         EMAIL: ${{ secrets.EMAIL }}
         PASSWORD: ${{ secrets.PASSWORD }}
 
+  prep:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+    - uses: google-github-actions/release-please-action@v4
+      with:
+        release-type: go
+
   publish:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     needs:
