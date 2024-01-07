@@ -42,7 +42,7 @@ jobs:
         PASSWORD: ${{ secrets.PASSWORD }}
 
   publish:
-    if: ${{ startsWith(github.ref, 'refs/tags/v')
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     needs:
     - scan
     - test
