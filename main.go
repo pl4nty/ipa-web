@@ -245,10 +245,13 @@ var content embed.FS
 
 func main() {
 	initWithCommand(true, false, "text")
-	login()
 	searchLimit, err := strconv.ParseInt(os.Getenv("SEARCH_LIMIT"), 10, 64)
 	if err != nil {
 		searchLimit = 15
+	}
+	err = login()
+	if err != nil {
+		print(fmt.Errorf("login failed: %w", err).Error())
 	}
 
 	r := gin.Default()
@@ -323,5 +326,8 @@ func main() {
 		c.File(data.cachePath)
 	})
 
-	r.Run()
+	err = r.Run()
+	if err != nil {
+		print(err.Error())
+	}
 }

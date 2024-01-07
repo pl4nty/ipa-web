@@ -7,7 +7,10 @@ import (
 // reserved name, called before all tests
 func TestMain(t *testing.T) {
 	initWithCommand(true, false, "text")
-	login()
+	err := login()
+	if err != nil {
+		print(fmt.Errorf("login failed: %w", err).Error())
+	}
 }
 
 func TestSearchBundle(t *testing.T) {
