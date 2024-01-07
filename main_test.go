@@ -1,18 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
 // reserved name, called before all tests
 func TestMain(t *testing.T) {
 	t.Helper()
-	initWithCommand(true, false, "text")
-	err := login()
-	if err != nil {
-		print(fmt.Errorf("login failed: %w", err).Error())
-	}
+	_ = setup()
 }
 
 func TestSearchBundle(t *testing.T) {

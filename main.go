@@ -253,10 +253,7 @@ var retryOptions = []retry.Option{
 	}),
 }
 
-//go:embed static/* templates/*
-var content embed.FS
-
-func main() {
+func setup() int64 {
 	// setup app store client
 	initWithCommand(true, false, "text")
 	searchLimit, err := strconv.ParseInt(os.Getenv("SEARCH_LIMIT"), 10, 64)
@@ -274,9 +271,17 @@ func main() {
 		err = os.Mkdir("cache", 0700)
 		if err != nil {
 			fmt.Println(err.Error())
-			return
 		}
 	}
+
+	return searchLimit
+}
+
+//go:embed static/* templates/*
+var content embed.FS
+
+func main() {
+	searchLimit := setup()
 
 	r := gin.Default()
 	templ := template.Must(template.New("").ParseFS(content, "templates/**/*"))
