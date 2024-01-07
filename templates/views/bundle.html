@@ -4,7 +4,11 @@
 {{ template "layouts/header.html" .}}
 
 <h1>{{ .Id }}</h1>
-<a class="link-primary" href="/download/{{ .Id }}">Download plist</a>
+<div>
+  <a class="link-primary" href="/download/{{ .Id }}/Info.plist" download="{{ .Id }}_Info.plist">Info.plist</a>
+  <br>
+  <a class="link-primary" href="/download/{{ .Id }}/entitlements.plist" download="{{ .Id }}_entitlements.plist">entitlements.plist</a>
+</div>
 
 <table class="table">
   <thead>
@@ -15,7 +19,7 @@
     </tr>
   </thead>
   <tbody>
-    {{ range .PackageInfo.CFBundleURLTypes }}
+    {{ range .Bundle.Information.CFBundleURLTypes }}
     <tr>
       <th scope="row">{{ or .CFBundleURLName .CFBundleTypeRole }}</th>
       <td>{{ .CFBundleTypeRole }}</td>
