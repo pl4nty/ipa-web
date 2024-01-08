@@ -114,7 +114,8 @@ func getBundle(bundleID string) (*Bundle, error) {
 
 	// regexp doesn't support backreferences
 	// https://stackoverflow.com/q/23968992
-	mainBinary := regexp.MustCompile(`^Payload/(.+)\.app/([^/]+)$`)
+	mainBinary := regexp.MustCompile(`^Payload/[^/]+\.app/([^/]+)$`)
+	infoPlist := regexp.MustCompile(`^Payload/[^/]+\.app/Info\.plist$`)
 
 	// based on readInfoPlist from https://github.com/majd/ipatool/blob/v2.1.3/pkg/appstore/appstore_replicate_sinf.go
 	zipReader, err := zip.OpenReader(ipa.DestinationPath)
@@ -122,7 +123,7 @@ func getBundle(bundleID string) (*Bundle, error) {
 		return nil, err
 	}
 	for _, file := range zipReader.File {
-		if strings.Contains(file.Name, ".app/Info.plist") {
+		if infoPlist.MatchString(file.Name) {
 			src, err := file.Open()
 			if err != nil {
 				return nil, err
@@ -214,7 +215,7 @@ func getCacheFile[P BundleInformation | BundleEntitlements](app appstore.App, p 
 	file, err := os.OpenFile(cache, os.O_RDONLY, 0600)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			fmt.Println("cache miss: ", cache)
+			fmt.Println("cache miss:", cache)
 		}
 		return err
 	}
