@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/pl4nty/ipa-web/compare/v0.3.0...v0.4.0) (2024-01-08)
+
+
+### Features
+
+* support entitlements ([#10](https://github.com/pl4nty/ipa-web/issues/10)) ([49d25c0](https://github.com/pl4nty/ipa-web/commit/49d25c0033942de8297fe395e590deec1b664a85))
+
+
+### Bug Fixes
+
+* only extract main `Info.plist` ([b0631cf](https://github.com/pl4nty/ipa-web/commit/b0631cf5a9abcb9c9ae9c6519abd79006421197a))
+
 ## [0.3.0](https://github.com/pl4nty/ipa-web/compare/v0.2.1...v0.3.0) (2024-01-07)
 
 
