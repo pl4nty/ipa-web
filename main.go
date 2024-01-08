@@ -38,6 +38,8 @@ type BundleInformation struct {
 
 // TODO https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
 
+// TODO Apple Watch subfolder eg Payload/Passbook.app/Watch/PassbookWatchApp.app/
+
 type Bundle struct {
 	App          appstore.App
 	Information  BundleInformation
@@ -85,7 +87,7 @@ func getBundle(bundleID string) (*Bundle, error) {
 		Information:  BundleInformation{},
 		Entitlements: BundleEntitlements{},
 	}
-	if getCacheFile(bundle.App, bundle.Information) == nil && getCacheFile(bundle.App, bundle.Entitlements) == nil {
+	if getCacheFile(bundle.App, &bundle.Information) == nil && getCacheFile(bundle.App, &bundle.Entitlements) == nil {
 		return &bundle, nil
 	}
 
@@ -137,7 +139,7 @@ func getBundle(bundleID string) (*Bundle, error) {
 				return nil, err
 			}
 
-			cache, err := os.OpenFile(getCachePath(bundle.App, bundle.Information), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+			cache, err := os.OpenFile(getCachePath(bundle.App, &bundle.Information), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
 			if err != nil {
 				return nil, err
 			}
@@ -192,7 +194,7 @@ func getBundle(bundleID string) (*Bundle, error) {
 				return nil, err
 			}
 
-			err = os.WriteFile(getCachePath(bundle.App, bundle.Entitlements), lines, file.Mode())
+			err = os.WriteFile(getCachePath(bundle.App, &bundle.Entitlements), lines, file.Mode())
 			if err != nil {
 				return nil, err
 			}
@@ -206,7 +208,7 @@ func getBundle(bundleID string) (*Bundle, error) {
 	return &bundle, nil
 }
 
-func getCacheFile[P BundleInformation | BundleEntitlements](app appstore.App, p P) error {
+func getCacheFile[P BundleInformation | BundleEntitlements](app appstore.App, p *P) error {
 	cache := getCachePath(app, p)
 
 	file, err := os.OpenFile(cache, os.O_RDONLY, 0600)
@@ -223,7 +225,7 @@ func getCacheFile[P BundleInformation | BundleEntitlements](app appstore.App, p 
 		return err
 	}
 
-	_, err = plist.Unmarshal(data.Bytes(), &p)
+	_, err = plist.Unmarshal(data.Bytes(), p)
 	if err != nil {
 		return err
 	}
@@ -231,8 +233,9 @@ func getCacheFile[P BundleInformation | BundleEntitlements](app appstore.App, p 
 	return nil
 }
 
-func getCachePath[P BundleInformation | BundleEntitlements](app appstore.App, p P) string {
-	return fmt.Sprintf("cache/%s_%d_%s_%T.plist", app.BundleID, app.ID, app.Version, p)
+func getCachePath[P BundleInformation | BundleEntitlements](app appstore.App, p *P) string {
+	path := fmt.Sprintf("cache/%s_%d_%s_%T.plist", app.BundleID, app.ID, app.Version, *p)
+	return path
 }
 
 var retryOptions = []retry.Option{
@@ -336,6 +339,11 @@ func main() {
 			return
 		}
 
+		domains := []string{}
+		for _, domain := range data.Entitlements.AssociatedDomains {
+			domains = append(domains, strings.Replace(domain, "applinks:", "", 1))
+		}
+		data.Entitlements.AssociatedDomains = domains
 		c.HTML(http.StatusOK, "views/bundle.html", gin.H{
 			"Id":     c.Param("id"),
 			"Bundle": data,
@@ -354,9 +362,9 @@ func main() {
 
 		switch c.Param("file") {
 		case "Info.plist":
-			c.File(getCachePath(data.App, BundleInformation{}))
+			c.File(getCachePath(data.App, &BundleInformation{}))
 		case "entitlements.plist":
-			c.File(getCachePath(data.App, BundleEntitlements{}))
+			c.File(getCachePath(data.App, &BundleEntitlements{}))
 		default:
 			c.String(http.StatusInternalServerError, "unknown file")
 		}
