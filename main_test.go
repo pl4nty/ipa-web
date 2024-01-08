@@ -1,21 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
 // reserved name, called before all tests
 func TestMain(t *testing.T) {
-	initWithCommand(true, false, "text")
-	err := login()
-	if err != nil {
-		print(fmt.Errorf("login failed: %w", err).Error())
-	}
+	t.Helper()
+	_ = setup()
 }
 
 func TestSearchBundle(t *testing.T) {
-	data, err := searchBundle("Apple Pages", 15)
+	data, err := searchBundles("Apple Pages", 15)
 	found := false
 	results := []string{}
 	if err == nil {
@@ -34,11 +30,11 @@ func TestSearchBundle(t *testing.T) {
 }
 
 func TestPackageInfo(t *testing.T) {
-	data, err := getPackageInfo("com.apple.Pages")
+	data, err := getBundle("com.apple.Pages")
 	found := false
 	results := []string{}
 	if err == nil {
-		for _, scheme := range data.packageInfo.CFBundleURLTypes {
+		for _, scheme := range data.Information.CFBundleURLTypes {
 			if scheme.CFBundleURLName == "com.apple.iwork.pages-share" {
 				found = true
 				break

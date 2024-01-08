@@ -4,26 +4,53 @@
 {{ template "layouts/header.html" .}}
 
 <h1>{{ .Id }}</h1>
-<a class="link-primary" href="/download/{{ .Id }}">Download plist</a>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Type</th>
-      <th scope="col">Role</th>
-      <th scope="col">Schemes</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{ range .PackageInfo.CFBundleURLTypes }}
-    <tr>
-      <th scope="row">{{ or .CFBundleURLName .CFBundleTypeRole }}</th>
-      <td>{{ .CFBundleTypeRole }}</td>
-      <td>{{ range .CFBundleURLSchemes }}{{ . }}<br>{{ end }}</td>
-    </tr>
-    {{ end }}
-  </tbody>
-</table>
+<div>
+  <h4>
+    <a class="link-primary" href="/download/{{ .Id }}/Info.plist" download="{{ .Id }}_Info.plist">Info.plist</a>
+  </h4>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+        <th scope="col">Role</th>
+        <th scope="col">Schemes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range .Bundle.Information.CFBundleURLTypes }}
+      <tr>
+        <th scope="row">{{ or .CFBundleURLName .CFBundleTypeRole }}</th>
+        <td>{{ .CFBundleTypeRole }}</td>
+        <td>{{ range .CFBundleURLSchemes }}{{ . }}<br>{{ end }}</td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>
+
+<br>
+
+<div>
+  <h4>
+    <a class="link-primary" href="/download/{{ .Id }}/entitlements.plist"
+      download="{{ .Id }}_entitlements.plist">entitlements.plist</a>
+  </h4>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Entitlement</th>
+        <th scope="col">Values</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">associated-domains (Universal Links)</th>
+        <td>{{ range .Bundle.Entitlements.AssociatedDomains }}http://{{ . }}/*<br>https://{{ . }}/*<br>{{ end }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <!--Embed the footer.html template at this location-->
 {{ template "layouts/footer.html" .}}
