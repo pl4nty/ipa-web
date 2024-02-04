@@ -8,7 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/juju/persistent-cookiejar v1.0.0
 	github.com/majd/ipatool/v2 v2.1.4
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	golang.org/x/term v0.16.0
 	howett.net/plist v1.0.1
 )
