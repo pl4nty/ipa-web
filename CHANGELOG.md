@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.2](https://github.com/pl4nty/ipa-web/compare/v0.4.1...v0.4.2) (2024-03-05)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/majd/ipatool/v2 to v2.1.4 ([61b2de0](https://github.com/pl4nty/ipa-web/commit/61b2de0542ebcfd8528d075afca7c68884ebc81c))
+* **deps:** update module github.com/rs/zerolog to v1.32.0 ([cb04088](https://github.com/pl4nty/ipa-web/commit/cb040885feb7c356a0517b0e2cb80f2123f38949))
+* **deps:** update module golang.org/x/term to v0.17.0 ([c3682a1](https://github.com/pl4nty/ipa-web/commit/c3682a10fb7a2cf7880053d3226b4d884716c28b))
+* **deps:** update module golang.org/x/term to v0.18.0 ([e82ef68](https://github.com/pl4nty/ipa-web/commit/e82ef684384ec167a071683142dda3767f7ad2f7))
+* use Renovate best practices preset, enable go mod tidy ([89ed638](https://github.com/pl4nty/ipa-web/commit/89ed638f4a619354768b5ca20dbca783938466b3))
+
 ## [0.4.0](https://github.com/pl4nty/ipa-web/compare/v0.3.0...v0.4.0) (2024-01-08)
 
 
