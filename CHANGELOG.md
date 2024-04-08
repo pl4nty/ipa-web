@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/pl4nty/ipa-web/compare/v0.4.2...v0.4.3) (2024-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update module golang.org/x/term to v0.19.0 ([31dafa6](https://github.com/pl4nty/ipa-web/commit/31dafa6e5748de7ed7453ecb1ee6696f795cbab9))
+
 ## [0.4.2](https://github.com/pl4nty/ipa-web/compare/v0.4.1...v0.4.2) (2024-03-05)
 
 
