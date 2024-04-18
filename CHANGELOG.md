@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/pl4nty/ipa-web/compare/v0.4.3...v0.4.4) (2024-04-18)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/avast/retry-go/v4 to v4.6.0 ([fb2b8e4](https://github.com/pl4nty/ipa-web/commit/fb2b8e4bc061bdbace74b7bc9a52222482782afc))
+
 ## [0.4.3](https://github.com/pl4nty/ipa-web/compare/v0.4.2...v0.4.3) (2024-04-08)
 
 
