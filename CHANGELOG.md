@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.5](https://github.com/pl4nty/ipa-web/compare/v0.4.4...v0.4.5) (2024-05-14)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/gin-gonic/gin to v1.10.0 ([625c49a](https://github.com/pl4nty/ipa-web/commit/625c49a7877b9dca9a5f1fe5c75a3c491489ace6))
+* **deps:** update module golang.org/x/term to v0.20.0 ([22184e6](https://github.com/pl4nty/ipa-web/commit/22184e6c0770ea16de09c348258a5c339d6335a0))
+
 ## [0.4.4](https://github.com/pl4nty/ipa-web/compare/v0.4.3...v0.4.4) (2024-04-18)
 
 
