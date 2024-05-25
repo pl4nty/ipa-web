@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.6](https://github.com/pl4nty/ipa-web/compare/v0.4.5...v0.4.6) (2024-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/rs/zerolog to v1.33.0 ([#56](https://github.com/pl4nty/ipa-web/issues/56)) ([75afb6c](https://github.com/pl4nty/ipa-web/commit/75afb6ce4582f3e7aae551b462413de7cdfd7553))
+
 ## [0.4.5](https://github.com/pl4nty/ipa-web/compare/v0.4.4...v0.4.5) (2024-05-14)
 
 
