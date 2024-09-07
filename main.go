@@ -98,13 +98,16 @@ func getBundle(bundleID string) (*Bundle, error) {
 	}
 	tmp.Close()
 
-	// dowload, 1-time purchase if necessary
+	// download, 1-time purchase if necessary
 	downloadInput := appstore.DownloadInput{Account: accountInfo.Account, App: bundle.App, OutputPath: tmp.Name()}
 	ipa, err := dependencies.AppStore.Download(downloadInput)
 	if errors.Is(err, appstore.ErrLicenseRequired) {
 		err = dependencies.AppStore.Purchase(appstore.PurchaseInput{Account: accountInfo.Account, App: bundle.App})
 	}
 	if err != nil {
+		if strings.Contains(err.Error(), "failed to purchase app") {
+			return nil, errors.New("app purchasing is broken due to an Apple API change. please contact tom@tplant.com.au for help, or see this issue for more details: https://github.com/NyaMisty/ipatool-py/issues/58")
+		}
 		return nil, err
 	}
 	ipa, err = dependencies.AppStore.Download(downloadInput)
@@ -336,6 +339,7 @@ func main() {
 			return getBundle(c.Param("id"))
 		}, retryOptions...)
 		if err != nil {
+			fmt.Println(err)
 			c.String(http.StatusInternalServerError, err.Error())
 			return
 		}
