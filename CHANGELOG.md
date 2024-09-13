@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.7](https://github.com/pl4nty/ipa-web/compare/v0.4.6...v0.4.7) (2024-09-13)
+
+
+### Bug Fixes
+
+* **deps:** update module golang.org/x/term to v0.21.0 ([43963bd](https://github.com/pl4nty/ipa-web/commit/43963bd40a726a3f262c95ffd3532407b993e16c))
+* **deps:** update module golang.org/x/term to v0.22.0 ([30e4176](https://github.com/pl4nty/ipa-web/commit/30e417610eb1acd8f4c72eaea1cf22cec9a0b576))
+* **deps:** update module golang.org/x/term to v0.23.0 ([1ba9c40](https://github.com/pl4nty/ipa-web/commit/1ba9c40a16cd796f494252f5bd3b56dc8688df00))
+* **deps:** update module golang.org/x/term to v0.24.0 ([a72f524](https://github.com/pl4nty/ipa-web/commit/a72f5243a84bc83ee8047f1c504def7251fbe04a))
+* use friendly error when purchasing fails due to Apple change ([5b809ef](https://github.com/pl4nty/ipa-web/commit/5b809efb0bd838881eaf2872789398e4e2981207))
+
 ## [0.4.6](https://github.com/pl4nty/ipa-web/compare/v0.4.5...v0.4.6) (2024-05-23)
 
 
