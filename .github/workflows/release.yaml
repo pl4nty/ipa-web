@@ -14,7 +14,7 @@ jobs:
       contents: read
       security-events: write
     steps:
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
 
     - uses: securego/gosec@master
       with:
@@ -33,7 +33,7 @@ jobs:
       # Optional: Allow write access to checks to allow the action to annotate code in the PR.
       checks: write
     steps:
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5
 
     - uses: golangci/golangci-lint-action@971e284b6050e8a5849b72094c50ab08da042db8 # v6
@@ -67,7 +67,7 @@ jobs:
       contents: write
       packages: write
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
         with:
           fetch-depth: 0
       - uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
