@@ -41,7 +41,7 @@ jobs:
         version: latest
 
     - run: go build -v ./...
-    - uses: robherley/go-test-action@d5d3f9915dc4e07e84312edb08bfd4fba4a73f2c # v0.5.0
+    - uses: robherley/go-test-action@b19f6aadabfb1ad85079065b21aa2af132466468 # v0.6.0
       env:
         EMAIL: ${{ secrets.EMAIL }}
         PASSWORD: ${{ secrets.PASSWORD }}
