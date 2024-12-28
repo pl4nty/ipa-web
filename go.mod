@@ -7,7 +7,7 @@ require (
 	github.com/avast/retry-go/v4 v4.6.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/juju/persistent-cookiejar v1.0.0
-	github.com/majd/ipatool/v2 v2.1.4-0.202412288a23d6f
+	github.com/majd/ipatool/v2 v2.1.4
 	github.com/rs/zerolog v1.33.0
 	golang.org/x/term v0.27.0
 	howett.net/plist v1.0.1
