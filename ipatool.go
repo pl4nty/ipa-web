@@ -107,6 +107,7 @@ func initWithCommand(verbose bool, interactive bool, logFormat string) appstore.
 		OperatingSystem: dependencies.OS,
 		Keychain:        dependencies.Keychain,
 		Machine:         dependencies.Machine,
+		Guid: "09262EB0AF06", // random
 	})
 
 	util.Must("", createConfigDirectory(dependencies.OS, dependencies.Machine))

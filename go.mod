@@ -13,6 +13,8 @@ require (
 	howett.net/plist v1.0.1
 )
 
+replace github.com/majd/ipatool/v2 => github.com/tux-mind/ipatool/v2 v2.0.0-20241219155218-457eba3a2300
+
 require (
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/avast/retry-go v3.0.0+incompatible // indirect
