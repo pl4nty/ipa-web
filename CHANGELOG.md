@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.9](https://github.com/pl4nty/ipa-web/compare/v0.4.8...v0.4.9) (2025-01-27)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/majd/ipatool/v2 to v2.1.5 ([#133](https://github.com/pl4nty/ipa-web/issues/133)) ([c3b4b9b](https://github.com/pl4nty/ipa-web/commit/c3b4b9b1417e0d726dbee07db664883852a19106))
+* **deps:** update module golang.org/x/term to v0.28.0 ([#123](https://github.com/pl4nty/ipa-web/issues/123)) ([f3e8d35](https://github.com/pl4nty/ipa-web/commit/f3e8d352523fd0282096ba0e39c87cf629783558))
+* ipatool version ([c457971](https://github.com/pl4nty/ipa-web/commit/c457971ba21f339fb6884b51f8c5dfdf847687a1))
+
 ## [0.4.8](https://github.com/pl4nty/ipa-web/compare/v0.4.7...v0.4.8) (2024-12-28)
 
 
