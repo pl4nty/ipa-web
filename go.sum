@@ -137,8 +137,8 @@ github.com/thediveo/enumflag/v2 v2.0.5 h1:VJjvlAqUb6m6mxOrB/0tfBJI0Kvi9wJ8ulh38x
 github.com/thediveo/enumflag/v2 v2.0.5/go.mod h1:0NcG67nYgwwFsAvoQCmezG0J0KaIxZ0f7skg9eLq1DA=
 github.com/thediveo/success v1.0.1 h1:NVwUOwKUwaN8szjkJ+vsiM2L3sNBFscldoDJ2g2tAPg=
 github.com/thediveo/success v1.0.1/go.mod h1:AZ8oUArgbIsCuDEWrzWNQHdKnPbDOLQsWOFj9ynwLt0=
-github.com/tux-mind/ipatool/v2 v2.0.0-20250121214210-5b53dcd8fd06 h1:RW0s+RzV41e/D1Ome3YiNphOdObqu69n1rctpJLBJBk=
-github.com/tux-mind/ipatool/v2 v2.0.0-20250121214210-5b53dcd8fd06/go.mod h1:nsZzbxqTxEccpFh12kq6rPtFTVyzFyIBjHyDtpuydjw=
+github.com/tux-mind/ipatool/v2 v2.0.0-20250119231319-21cbd596bcba h1:jtZISCg72ZR4f0pF3h9aF4jUVpmyRefXl/g4EM94hoA=
+github.com/tux-mind/ipatool/v2 v2.0.0-20250119231319-21cbd596bcba/go.mod h1:nsZzbxqTxEccpFh12kq6rPtFTVyzFyIBjHyDtpuydjw=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=
 github.com/twitchyliquid64/golang-asm v0.15.1/go.mod h1:a1lVb/DtPvCB8fslRZhAngC2+aY1QWCk3Cedj/Gdt08=
 github.com/ugorji/go/codec v1.2.12 h1:9LC83zGrHhuUA9l16C9AHXAqEV/2wBQ4nkvumAE65EE=
