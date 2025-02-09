@@ -36,7 +36,7 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
     - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
 
-    - uses: golangci/golangci-lint-action@e60da84bfae8c7920a47be973d75e15710aa8bd7 # v6
+    - uses: golangci/golangci-lint-action@2e788936b09dd82dc280e845628a40d2ba6b204c # v6
       with:
         version: latest
 
