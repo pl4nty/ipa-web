@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.10](https://github.com/pl4nty/ipa-web/compare/v0.4.9...v0.4.10) (2025-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/avast/retry-go/v4 to v4.6.1 ([#155](https://github.com/pl4nty/ipa-web/issues/155)) ([e8a7738](https://github.com/pl4nty/ipa-web/commit/e8a7738a0fd096ebbe19101ca87e2814caa939dc))
+* **deps:** update module github.com/majd/ipatool/v2 to v2.1.6 ([#147](https://github.com/pl4nty/ipa-web/issues/147)) ([999c021](https://github.com/pl4nty/ipa-web/commit/999c0214066d1846b20364fc6c49ffe155406b52))
+* **deps:** update module golang.org/x/term to v0.29.0 ([#141](https://github.com/pl4nty/ipa-web/issues/141)) ([47a5d8a](https://github.com/pl4nty/ipa-web/commit/47a5d8a7c34fd128db0db5d3e3427e9a1ff4beaf))
+
 ## [0.4.9](https://github.com/pl4nty/ipa-web/compare/v0.4.8...v0.4.9) (2025-01-27)
 
 
