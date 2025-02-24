@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/99designs/keyring v1.2.2
-	github.com/avast/retry-go/v4 v4.6.0
+	github.com/avast/retry-go/v4 v4.6.1
 	github.com/gin-gonic/gin v1.10.0
 	github.com/juju/persistent-cookiejar v1.0.0
 	github.com/majd/ipatool/v2 v2.1.6
