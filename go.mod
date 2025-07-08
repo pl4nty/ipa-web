@@ -2,7 +2,7 @@ module github.com/pl4nty/ipa-web
 
 go 1.23.0
 
-toolchain go1.24.4
+toolchain go1.24.5
 
 require (
 	github.com/99designs/keyring v1.2.2
