@@ -1,5 +1,8 @@
 # IPA Web
 
+> [!WARNING]
+> Apple have started blocking me pretty often. If the site doesn't work, check out https://github.com/pl4nty/ipa-track
+
 Search, view, and download iOS app metadata from App Store `.ipa` files. Currently supports:
 
 * URL schemes
