@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.4.10](https://github.com/pl4nty/ipa-web/compare/v0.4.9...v0.4.10) (2026-02-20)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/avast/retry-go/v4 to v4.6.1 ([#155](https://github.com/pl4nty/ipa-web/issues/155)) ([e8a7738](https://github.com/pl4nty/ipa-web/commit/e8a7738a0fd096ebbe19101ca87e2814caa939dc))
+* **deps:** update module github.com/avast/retry-go/v4 to v4.7.0 ([#222](https://github.com/pl4nty/ipa-web/issues/222)) ([8bde12b](https://github.com/pl4nty/ipa-web/commit/8bde12bca2f85463bb68db91fdf8c4ac1ddd98b2))
+* **deps:** update module github.com/gin-gonic/gin to v1.10.1 ([#178](https://github.com/pl4nty/ipa-web/issues/178)) ([b0fa65e](https://github.com/pl4nty/ipa-web/commit/b0fa65ef310cd6b56d16cc1184802c0c8b2fc6fc))
+* **deps:** update module github.com/gin-gonic/gin to v1.11.0 ([#210](https://github.com/pl4nty/ipa-web/issues/210)) ([e9dfd5e](https://github.com/pl4nty/ipa-web/commit/e9dfd5e7f28d616bac30dedc5dbda7e09c3bbb12))
+* **deps:** update module github.com/majd/ipatool/v2 to v2.1.6 ([#147](https://github.com/pl4nty/ipa-web/issues/147)) ([999c021](https://github.com/pl4nty/ipa-web/commit/999c0214066d1846b20364fc6c49ffe155406b52))
+* **deps:** update module github.com/majd/ipatool/v2 to v2.2.0 ([#182](https://github.com/pl4nty/ipa-web/issues/182)) ([7bb750c](https://github.com/pl4nty/ipa-web/commit/7bb750c4d1e35a5cf30da2e1001071bdd492e380))
+* **deps:** update module github.com/majd/ipatool/v2 to v2.3.0 ([#260](https://github.com/pl4nty/ipa-web/issues/260)) ([33ea976](https://github.com/pl4nty/ipa-web/commit/33ea97639654edaf7f71eb017bd0ee6e120d04e1))
+* **deps:** update module github.com/rs/zerolog to v1.34.0 ([#163](https://github.com/pl4nty/ipa-web/issues/163)) ([c9bba73](https://github.com/pl4nty/ipa-web/commit/c9bba732b4bf24dbe633c3aa946e088b90b2aaf2))
+* **deps:** update module golang.org/x/term to v0.29.0 ([#141](https://github.com/pl4nty/ipa-web/issues/141)) ([47a5d8a](https://github.com/pl4nty/ipa-web/commit/47a5d8a7c34fd128db0db5d3e3427e9a1ff4beaf))
+* **deps:** update module golang.org/x/term to v0.30.0 ([#156](https://github.com/pl4nty/ipa-web/issues/156)) ([46db8cc](https://github.com/pl4nty/ipa-web/commit/46db8cc9a14bbb9139c7bcf086c3913818d46ada))
+* **deps:** update module golang.org/x/term to v0.31.0 ([#168](https://github.com/pl4nty/ipa-web/issues/168)) ([815742c](https://github.com/pl4nty/ipa-web/commit/815742c7df874ee8fdb260a35c2e774590a8b7f8))
+* **deps:** update module golang.org/x/term to v0.32.0 ([#174](https://github.com/pl4nty/ipa-web/issues/174)) ([c189195](https://github.com/pl4nty/ipa-web/commit/c189195a47ef1e1c7c89222d0e23cb29abb87568))
+* **deps:** update module golang.org/x/term to v0.33.0 ([#187](https://github.com/pl4nty/ipa-web/issues/187)) ([9a7a8fb](https://github.com/pl4nty/ipa-web/commit/9a7a8fbfff7de2b303fd193297bfe5aad09294af))
+* **deps:** update module golang.org/x/term to v0.34.0 ([#195](https://github.com/pl4nty/ipa-web/issues/195)) ([745acd0](https://github.com/pl4nty/ipa-web/commit/745acd0bb366590a017054761201e7c3a0575799))
+* **deps:** update module golang.org/x/term to v0.35.0 ([#207](https://github.com/pl4nty/ipa-web/issues/207)) ([c060ccd](https://github.com/pl4nty/ipa-web/commit/c060ccda07c5b5612534d08ad25df60fa700714b))
+* **deps:** update module golang.org/x/term to v0.36.0 ([#218](https://github.com/pl4nty/ipa-web/issues/218)) ([4925100](https://github.com/pl4nty/ipa-web/commit/4925100b1abc16756eb31021c82167f8c39bea54))
+* **deps:** update module golang.org/x/term to v0.37.0 ([#229](https://github.com/pl4nty/ipa-web/issues/229)) ([318408f](https://github.com/pl4nty/ipa-web/commit/318408f1efd8567013cb743619e0654458cf57d9))
+* **deps:** update module golang.org/x/term to v0.38.0 ([#239](https://github.com/pl4nty/ipa-web/issues/239)) ([1c0eb8e](https://github.com/pl4nty/ipa-web/commit/1c0eb8e877421fe605951a16e6cdcfe7ba80cd46))
+* **deps:** update module golang.org/x/term to v0.39.0 ([#247](https://github.com/pl4nty/ipa-web/issues/247)) ([44f3f4a](https://github.com/pl4nty/ipa-web/commit/44f3f4abc13732e186728cf234b0d6f69f51ba00))
+* **deps:** update module golang.org/x/term to v0.40.0 ([#257](https://github.com/pl4nty/ipa-web/issues/257)) ([600b93b](https://github.com/pl4nty/ipa-web/commit/600b93bc62c9aa5e0154eef6f0d5b79c1237f71f))
+* reliability warning ([ea0f79a](https://github.com/pl4nty/ipa-web/commit/ea0f79aa82065a1d1c2a4dfed905bf298bb5bcf1))
+
 ## [0.4.9](https://github.com/pl4nty/ipa-web/compare/v0.4.8...v0.4.9) (2025-01-27)
 
 
