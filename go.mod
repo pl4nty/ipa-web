@@ -7,6 +7,7 @@ toolchain go1.26.0
 require (
 	github.com/99designs/keyring v1.2.2
 	github.com/avast/retry-go/v4 v4.7.0
+	github.com/avast/retry-go/v5 v5.0.0
 	github.com/gin-gonic/gin v1.11.0
 	github.com/juju/persistent-cookiejar v1.0.0
 	github.com/majd/ipatool/v2 v2.3.0
