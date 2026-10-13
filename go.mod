@@ -62,7 +62,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
-	github.com/quic-go/quic-go v0.59.0 // indirect
+	github.com/quic-go/quic-go v0.59.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/schollz/progressbar/v3 v3.14.1 // indirect
 	github.com/spf13/cobra v1.8.0 // indirect
